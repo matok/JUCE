@@ -87,20 +87,32 @@ bool ComponentPeer::isKioskMode() const
 //==============================================================================
 void ComponentPeer::handleMouseEvent (int touchIndex, Point<float> pos, ModifierKeys newMods, int64 time)
 {
-    if (MouseInputSource* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (touchIndex))
-        MouseInputSource (*mouse).handleEvent (*this, pos, time, newMods);
+    JUCE_TRY
+    {
+        if (MouseInputSource* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (touchIndex))
+            MouseInputSource (*mouse).handleEvent (*this, pos, time, newMods);
+    }
+    JUCE_CATCH_EXCEPTION
 }
 
 void ComponentPeer::handleMouseWheel (int touchIndex, Point<float> pos, int64 time, const MouseWheelDetails& wheel)
 {
-    if (MouseInputSource* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (touchIndex))
-        MouseInputSource (*mouse).handleWheel (*this, pos, time, wheel);
+    JUCE_TRY
+    {
+        if (MouseInputSource* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (touchIndex))
+            MouseInputSource (*mouse).handleWheel (*this, pos, time, wheel);
+    }
+    JUCE_CATCH_EXCEPTION
 }
 
 void ComponentPeer::handleMagnifyGesture (int touchIndex, Point<float> pos, int64 time, float scaleFactor)
 {
-    if (MouseInputSource* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (touchIndex))
-        MouseInputSource (*mouse).handleMagnifyGesture (*this, pos, time, scaleFactor);
+    JUCE_TRY
+    {
+        if (MouseInputSource* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (touchIndex))
+            MouseInputSource (*mouse).handleMagnifyGesture (*this, pos, time, scaleFactor);
+    }
+    JUCE_CATCH_EXCEPTION
 }
 
 //==============================================================================

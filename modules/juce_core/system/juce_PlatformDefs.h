@@ -272,10 +272,10 @@ namespace juce
 
 #else
 
-  #define JUCE_TRY
-  #define JUCE_CATCH_EXCEPTION
-  #define JUCE_CATCH_ALL
-  #define JUCE_CATCH_ALL_ASSERT
+//  #define JUCE_TRY
+//  #define JUCE_CATCH_EXCEPTION
+//  #define JUCE_CATCH_ALL
+//  #define JUCE_CATCH_ALL_ASSERT
 
 #endif
 
