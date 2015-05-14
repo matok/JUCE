@@ -154,6 +154,9 @@ public:
         }
 
         writeInfoPlistFile();
+
+        // Deleting the .rsrc files can be needed to force Xcode to update the version number.
+        deleteRsrcFiles();
     }
 
 protected:
@@ -201,8 +204,12 @@ protected:
         Value  getLinkTimeOptimisationValue()          { return getValue (Ids::linkTimeOptimisation); }
         bool   isLinkTimeOptimisationEnabled() const   { return config   [Ids::linkTimeOptimisation]; }
 
+        var getDefaultOptimisationLevel() const override    { return var ((int) (isDebug() ? gccO0 : gccO3)); }
+
         void createConfigProperties (PropertyListBuilder& props)
         {
+            addGCCOptimisationProperty (props);
+
             if (iOS)
             {
                 const char* iosVersions[]      = { "Use Default",     "3.2", "4.0", "4.1", "4.2", "4.3", "5.0", "5.1", "6.0", "6.1", "7.0", "7.1", 0 };
@@ -599,6 +606,25 @@ private:
         if (settings ["UIStatusBarHidden"])
             addPlistDictionaryKeyBool (dict, "UIStatusBarHidden", true);
 
+        if (iOS)
+        {
+            static const char* kDefaultiOSOrientationStrings[] =
+            {
+                "UIInterfaceOrientationPortrait",
+                "UIInterfaceOrientationLandscapeLeft",
+                "UIInterfaceOrientationLandscapeRight",
+                nullptr
+            };
+
+            StringArray iOSOrientations (kDefaultiOSOrientationStrings);
+
+            dict->createNewChildElement ("key")->addTextElement ("UISupportedInterfaceOrientations");
+            XmlElement* plistStringArray = dict->createNewChildElement ("array");
+
+            for (int i = 0; i < iOSOrientations.size(); ++i)
+                plistStringArray->createNewChildElement ("string")->addTextElement (iOSOrientations[i]);
+        }
+
         for (int i = 0; i < xcodeExtraPListEntries.size(); ++i)
             dict->addChildElement (new XmlElement (xcodeExtraPListEntries.getReference(i)));
 
@@ -606,6 +632,12 @@ private:
         plist->writeToStream (mo, "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">");
 
         overwriteFileIfDifferentOrThrow (infoPlistFile, mo);
+    }
+
+    void deleteRsrcFiles() const
+    {
+        for (DirectoryIterator di (getTargetFolder().getChildFile ("build"), true, "*.rsrc", File::findFiles); di.next();)
+            di.getFile().deleteFile();
     }
 
     String getHeaderSearchPaths (const BuildConfiguration& config) const

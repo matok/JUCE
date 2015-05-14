@@ -1003,9 +1003,16 @@ ValueTree ValueTree::readFromStream (InputStream& input)
     for (int i = 0; i < numProps; ++i)
     {
         const String name (input.readString());
-        jassert (name.isNotEmpty());
-        const var value (var::readFromStream (input));
-        v.object->properties.set (name, value);
+
+        if (name.isNotEmpty())
+        {
+            const var value (var::readFromStream (input));
+            v.object->properties.set (name, value);
+        }
+        else
+        {
+            jassertfalse;  // trying to read corrupted data!
+        }
     }
 
     const int numChildren = input.readCompressedInt();
@@ -1014,6 +1021,9 @@ ValueTree ValueTree::readFromStream (InputStream& input)
     for (int i = 0; i < numChildren; ++i)
     {
         ValueTree child (readFromStream (input));
+
+        if (! child.isValid())
+            return v;
 
         v.object->children.add (child.object);
         child.object->parent = v.object;

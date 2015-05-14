@@ -66,11 +66,12 @@ public:
     virtual bool isXcode() const                { return false; }
     virtual bool isVisualStudio() const         { return false; }
     virtual int getVisualStudioVersion() const  { return 0; }
-    virtual bool isCodeBlocks() const           { return false; }
+    virtual bool isCodeBlocksWindows() const    { return false; }
+    virtual bool isCodeBlocksLinux() const      { return false; }
 
     virtual bool isAndroid() const              { return false; }
     virtual bool isWindows() const              { return false; }
-    virtual bool isLinux() const                { return false; }
+    virtual bool isLinuxMakefile() const        { return false; }
     virtual bool isOSX() const                  { return false; }
 
     bool mayCompileOnCurrentOS() const
@@ -80,7 +81,7 @@ public:
        #elif JUCE_WINDOWS
         return isWindows() || isAndroid();
        #elif JUCE_LINUX
-        return isLinux() || isAndroid();
+        return isLinuxMakefile() || isCodeBlocksLinux() || isAndroid();
        #else
         #error
        #endif
@@ -195,6 +196,7 @@ public:
 
         //==============================================================================
         virtual void createConfigProperties (PropertyListBuilder&) = 0;
+        virtual var getDefaultOptimisationLevel() const = 0;
 
         //==============================================================================
         Value getNameValue()                                { return getValue (Ids::name); }
@@ -233,6 +235,7 @@ public:
         UndoManager* getUndoManager() const                 { return project.getUndoManagerFor (config); }
 
         void createPropertyEditors (PropertyListBuilder&);
+        void addGCCOptimisationProperty (PropertyListBuilder&);
         void removeFromExporter();
 
         //==============================================================================
@@ -306,12 +309,14 @@ public:
 
     ValueTree settings;
 
-    //==============================================================================
-    enum OptimisationLevel
+    enum GCCOptimisationLevel
     {
-        optimisationOff = 1,
-        optimiseMinSize = 2,
-        optimiseMaxSpeed = 3
+        gccO0     = 1,
+        gccO1     = 4,
+        gccO2     = 5,
+        gccO3     = 3,
+        gccOs     = 2,
+        gccOfast  = 6
     };
 
 protected:
