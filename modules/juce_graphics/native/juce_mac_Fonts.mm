@@ -807,6 +807,25 @@ StringArray Font::findAllTypefaceNames()
     return names;
 }
 
+StringArray Font::findAllPostScriptNames()
+{
+    StringArray names;
+
+    CFArrayRef postScriptNames = CTFontManagerCopyAvailablePostScriptNames();
+    
+    for (CFIndex i = 0; i < CFArrayGetCount (postScriptNames); ++i)
+    {
+        const String name (String::fromCFString ((CFStringRef) CFArrayGetValueAtIndex (postScriptNames, i)));
+        
+        if (! name.startsWithChar ('.')) // ignore fonts that start with a '.'
+            names.addIfNotAlreadyThere (name);
+    }
+    
+    CFRelease (postScriptNames);
+    
+    return names;
+}
+
 StringArray Font::findAllTypefaceStyles (const String& family)
 {
     if (FontStyleHelpers::isPlaceholderFamilyName (family))

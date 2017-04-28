@@ -203,6 +203,7 @@ namespace Ids
     DECLARE_ID (CONFIGURATION);
     DECLARE_ID (MODULEPATHS);
     DECLARE_ID (MODULEPATH);
+    DECLARE_ID (minimalRebuild);
     DECLARE_ID (PATH);
     DECLARE_ID (userpath);
     DECLARE_ID (systempath);

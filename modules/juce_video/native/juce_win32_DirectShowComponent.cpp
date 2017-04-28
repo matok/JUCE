@@ -324,6 +324,8 @@ public:
         {
             hr = graphBuilder->RenderFile (fileOrURLPath.toWideCharPointer(), nullptr);
 
+            //NOTE: this is now properly fixed in release() method by invoking cancelPendingUpdate()
+            /*
             if (FAILED (hr))
             {
                 // Annoyingly, if we don't run the msg loop between failing and deleting the window, the
@@ -331,6 +333,7 @@ public:
                 // more messages for the whole app. (That's what happens in Win7, anyway)
                 MessageManager::getInstance()->runDispatchLoopUntil (200);
             }
+            */
         }
 
         // remove video renderer if not connected (no video)
@@ -370,6 +373,13 @@ public:
 
     void release()
     {
+        // cancel pending updates to avoid freezing
+        // this was originally fixed by Jule using runDispatchLoop() after failing RenderFile method, but it which caused realy nasty crashes
+        // (component can be deleted in async messages that are invoked during runDispatchLoop !)
+        // freezing is caused by infinite async loop handleAsyncUpdate() -> triggerAsyncUpdate() when hwnd = NULL
+        // (hwnd is being set to NULL at the end of this procedure (deleteNativeWindow))
+        cancelPendingUpdate();
+
         if (mediaControl != nullptr)
             mediaControl->Stop();
 

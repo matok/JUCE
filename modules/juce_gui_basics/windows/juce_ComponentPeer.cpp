@@ -81,20 +81,33 @@ bool ComponentPeer::isKioskMode() const
 void ComponentPeer::handleMouseEvent (MouseInputSource::InputSourceType type, Point<float> pos, ModifierKeys newMods,
                                       float newPressure, float newOrientation, int64 time, PenDetails pen, int touchIndex)
 {
-    if (auto* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (type, touchIndex))
-        MouseInputSource (*mouse).handleEvent (*this, pos, time, newMods, newPressure, newOrientation, pen);
+    JUCE_TRY
+    {
+         if (auto* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (type, touchIndex))
+            MouseInputSource (*mouse).handleEvent (*this, pos, time, newMods, newPressure, newOrientation, pen);
+    }
+    JUCE_CATCH_EXCEPTION
 }
 
 void ComponentPeer::handleMouseWheel (MouseInputSource::InputSourceType type, Point<float> pos, int64 time, const MouseWheelDetails& wheel, int touchIndex)
 {
-    if (auto* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (type, touchIndex))
-        MouseInputSource (*mouse).handleWheel (*this, pos, time, wheel);
+    JUCE_TRY
+    {
+        if (auto* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (type, touchIndex))
+            MouseInputSource (*mouse).handleWheel (*this, pos, time, wheel);
+    }
+    JUCE_CATCH_EXCEPTION
 }
 
 void ComponentPeer::handleMagnifyGesture (MouseInputSource::InputSourceType type, Point<float> pos, int64 time, float scaleFactor, int touchIndex)
 {
-    if (auto* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (type, touchIndex))
-        MouseInputSource (*mouse).handleMagnifyGesture (*this, pos, time, scaleFactor);
+
+    JUCE_TRY
+    {
+        if (auto* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (type, touchIndex))
+            MouseInputSource (*mouse).handleMagnifyGesture (*this, pos, time, scaleFactor);
+    }
+    JUCE_CATCH_EXCEPTION
 }
 
 //==============================================================================

@@ -540,7 +540,7 @@ static String fixLineEndings (const String& s)
 
     lines.add (String());
 
-    return lines.joinIntoString ("\r\n");
+    return lines.joinIntoString ("\n");
 }
 
 bool JucerDocument::flushChangesToDocuments (Project* project)

@@ -220,6 +220,60 @@ StringArray Font::findAllTypefaceNames()
     return results;
 }
 
+StringArray Font::findAllPostScriptNames()
+{
+	StringArray results;
+
+#if JUCE_USE_DIRECTWRITE
+	SharedResourcePointer<Direct2DFactories> factories;
+
+	if (factories->systemFonts != nullptr)
+	{
+		ComSmartPtr<IDWriteFontFamily> fontFamily;
+		uint32 fontFamilyCount = 0;
+		fontFamilyCount = factories->systemFonts->GetFontFamilyCount();
+
+		for (uint32 i = 0; i < fontFamilyCount; ++i)
+		{
+			HRESULT hr = factories->systemFonts->GetFontFamily(i, fontFamily.resetAndGetPointerAddress());
+
+			if (SUCCEEDED(hr)) 
+			{
+				int fontCount = fontFamily->GetFontCount();
+				for (int j = 0; j < fontCount; j++) 
+				{
+					ComSmartPtr<IDWriteFont> font;
+					HRESULT hr = fontFamily->GetFont(j, font.resetAndGetPointerAddress());
+					if (FAILED(hr))
+						continue;
+
+					ComSmartPtr<IDWriteLocalizedStrings> strings;
+
+					BOOL exists = false; // A font does not have to have postscript name
+					HRESULT hr2 = font->GetInformationalStrings(
+						DWRITE_INFORMATIONAL_STRING_POSTSCRIPT_NAME,
+						strings.resetAndGetPointerAddress(),
+						&exists
+						);
+
+					if (FAILED(hr2) || !exists)
+						continue;
+
+					String postScriptName = getLocalisedName(strings);
+					if (postScriptName.isNotEmpty())
+						results.addIfNotAlreadyThere(postScriptName);
+				}
+			}
+		}
+	}
+
+	results.sort(true);
+#else
+	jassertfalse; // This method does not work without DWrite
+#endif
+	return results;
+}
+
 StringArray Font::findAllTypefaceStyles (const String& family)
 {
     if (FontStyleHelpers::isPlaceholderFamilyName (family))

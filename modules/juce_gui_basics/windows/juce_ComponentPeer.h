@@ -70,6 +70,10 @@ public:
         windowIgnoresKeyPresses     = (1 << 10),   /**< Tells the window not to catch any keypresses. This can
                                                         be used for things like plugin windows, to stop them interfering
                                                         with the host's shortcut keys */
+        
+        windowIsPanel               = (1 << 11),   /**< (OSX Only) Creates NSPanel instance instead of NSWindow */
+        
+        
         windowIsSemiTransparent     = (1 << 31)    /**< Not intended for public use - makes a window transparent. */
 
     };

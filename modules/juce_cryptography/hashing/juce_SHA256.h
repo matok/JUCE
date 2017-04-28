@@ -97,6 +97,10 @@ public:
 
 
 private:
+    // This private constructor is declared here to prevent you accidentally passing a
+    // String and having it unexpectedly call the constructor that takes a File.
+    explicit SHA256 (const String&) JUCE_DELETED_FUNCTION;
+    
     //==============================================================================
     uint8 result [32];
     void process (const void*, size_t);

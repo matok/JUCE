@@ -420,6 +420,12 @@ public:
     */
     static StringArray findAllTypefaceNames();
 
+	/** Returns a list of PostScript names for system fonts.
+	    
+		This is a custom function added by MisterHorse.
+	*/
+	static StringArray findAllPostScriptNames();
+
     /** Returns a list of all the available typeface font styles.
 
         The names returned can be passed into setTypefaceStyle().

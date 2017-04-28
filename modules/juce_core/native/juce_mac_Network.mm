@@ -674,8 +674,15 @@ public:
         while (isThreadRunning() && ! initialised)
         {
             if (listener != nullptr)
-                if (! listener->postDataSendProgress (inputStream, latestTotalBytes, (int) [[request HTTPBody] length]))
+            {
+                int bodyLength = 0;
+                {
+                    const ScopedLock sl (requestLock);
+                    bodyLength = (int)[[request HTTPBody] length];
+                }
+                if (! listener->postDataSendProgress (inputStream, latestTotalBytes, bodyLength))
                     return false;
+            }
 
             Thread::sleep (1);
         }
@@ -794,8 +801,12 @@ public:
 
     void run() override
     {
-        connection = [[NSURLConnection alloc] initWithRequest: request
-                                                     delegate: delegate];
+        {
+            const ScopedLock sl (requestLock);
+            connection = [[NSURLConnection alloc] initWithRequest: request
+                                                         delegate: delegate];
+        }
+        
         while (! threadShouldExit())
         {
             JUCE_AUTORELEASEPOOL
@@ -807,6 +818,7 @@ public:
 
     int64 contentLength = -1;
     CriticalSection dataLock;
+    CriticalSection requestLock;
     NSObject* delegate = nil;
     NSURLRequest* request = nil;
     NSURLConnection* connection = nil;

@@ -58,7 +58,8 @@ public:
     void setFill (const FillType&) override;
     void setOpacity (float) override;
     void setInterpolationQuality (Graphics::ResamplingQuality) override;
-
+    void setBlendMode(CGBlendMode blendMode);
+    
     //==============================================================================
     void fillRect (const Rectangle<int>&, bool replaceExistingContents) override;
     void fillRect (const Rectangle<float>&) override;

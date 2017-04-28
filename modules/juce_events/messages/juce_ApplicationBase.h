@@ -277,6 +277,8 @@ private:
 
 
 //==============================================================================
+#if 0
+
 #if JUCE_CATCH_UNHANDLED_EXCEPTIONS || defined (DOXYGEN)
 
  /** The JUCE_TRY/JUCE_CATCH_EXCEPTION wrappers can be used to pass any uncaught exceptions to
@@ -296,4 +298,6 @@ private:
 #else
  #define JUCE_TRY
  #define JUCE_CATCH_EXCEPTION
+#endif
+
 #endif

@@ -872,7 +872,17 @@ public:
             So on windows, this would be something like "c:\program files", on the
             Mac "/Applications", or "/usr" on linux.
         */
-        globalApplicationsDirectory
+        globalApplicationsDirectory,
+
+        /** The folder in which applications store their persistent user-specific settings.
+            On Windows, this might be "\Users\username\AppData\Local".
+            On the Mac, it might be "~/Library". If you're going to store your settings in here,
+
+            IMPORTANT NOTE: this directory differs from applicationDataDirectory
+            This directory is not roamed on Windows, meaning it is not synced in multi domain
+            corporate server environment
+        */
+        userLocalApplicationDataDirectory
     };
 
     /** Finds the location of a special type of file or directory, such as a home folder or

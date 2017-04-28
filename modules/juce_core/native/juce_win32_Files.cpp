@@ -565,6 +565,7 @@ File JUCE_CALLTYPE File::getSpecialLocation (const SpecialLocationType type)
         case userDocumentsDirectory:            csidlType = CSIDL_PERSONAL; break;
         case userDesktopDirectory:              csidlType = CSIDL_DESKTOP; break;
         case userApplicationDataDirectory:      csidlType = CSIDL_APPDATA; break;
+        case userLocalApplicationDataDirectory: csidlType = CSIDL_LOCAL_APPDATA; break;
         case commonApplicationDataDirectory:    csidlType = CSIDL_COMMON_APPDATA; break;
         case commonDocumentsDirectory:          csidlType = CSIDL_COMMON_DOCUMENTS; break;
         case globalApplicationsDirectory:       csidlType = CSIDL_PROGRAM_FILES; break;

@@ -1300,6 +1300,9 @@ public:
                     if (config.isFastMathEnabled())
                         cl->createNewChildElement ("FloatingPointModel")->addTextElement ("Fast");
 
+                    if (config.isMinimalRebuildEnabled())
+                        cl->createNewChildElement ("MinimalRebuild")->addTextElement ("true");
+
                     const String extraFlags (getOwner().replacePreprocessorTokens (config, getOwner().getExtraCompilerFlagsString()).trim());
                     if (extraFlags.isNotEmpty())
                         cl->createNewChildElement ("AdditionalOptions")->addTextElement (extraFlags + " %(AdditionalOptions)");
@@ -1672,6 +1675,9 @@ protected:
         Value getFastMathValue()                { return getValue (Ids::fastMath); }
         bool isFastMathEnabled() const          { return config [Ids::fastMath]; }
 
+        Value getMinimalRebuildValue()          { return getValue (Ids::minimalRebuild); }
+        bool isMinimalRebuildEnabled() const    { return config [Ids::minimalRebuild]; }
+
         //==============================================================================
         void createConfigProperties (PropertyListBuilder& props) override
         {
@@ -1685,6 +1691,9 @@ protected:
 
             props.add (new BooleanPropertyComponent (getFastMathValue(), "Relax IEEE compliance", "Enabled"),
                        "Enable this to use FAST_MATH non-IEEE mode. (Warning: this can have unexpected results!)");
+
+            props.add (new BooleanPropertyComponent (getMinimalRebuildValue(), "Enable Minimal Rebuild", "Enabled"),
+                       "Minimal Rebuild - If enabled - Multiprocess build is ignored");
         }
     };
 
